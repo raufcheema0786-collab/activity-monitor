@@ -6,6 +6,7 @@ frontend/dist/
 monitor.db
 auth_token.json
 app_settings.json
+sync_health.json
 screenshots/
 *.log
 .claude/

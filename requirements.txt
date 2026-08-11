@@ -4,3 +4,4 @@ pywin32
 mss
 pillow
 requests
+psutil
