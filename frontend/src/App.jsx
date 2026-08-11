@@ -2,6 +2,7 @@
 import Login from "./Login";
 import SessionList from "./SessionList";
 import SessionDetails from "./SessionDetails";
+import StatusView from "./StatusView";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -67,6 +68,10 @@ function App() {
     );
   }
 
+  if (screen === "status") {
+    return <StatusView onBack={() => setScreen("main")} />;
+  }
+
   return (
     <div style={{ padding: "40px", textAlign: "center" }}>
       <h1>Activity Monitor</h1>
@@ -85,6 +90,9 @@ function App() {
 
       <div style={{ marginTop: "30px" }}>
         <button onClick={() => setScreen("sessions")}>View Past Sessions</button>
+        <button style={{ marginLeft: "10px" }} onClick={() => setScreen("status")}>
+          My Status
+        </button>
       </div>
     </div>
   );

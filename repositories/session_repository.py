@@ -1,8 +1,11 @@
 from storage.database import get_connection
 
-def create_session(start_time):
+def create_session(start_time, client_ref=None, employee_id=None):
     conn = get_connection()
-    cursor = conn.execute("INSERT INTO sessions (start_time) VALUES (?)", (start_time,))
+    cursor = conn.execute(
+        "INSERT INTO sessions (start_time, client_ref, employee_id) VALUES (?, ?, ?)",
+        (start_time, client_ref, employee_id),
+    )
     conn.commit()
     session_id = cursor.lastrowid
     conn.close()
@@ -23,9 +26,14 @@ def get_session_by_id(session_id):
     conn.close()
     return dict(row) if row else None
 
-def get_all_sessions():
+def get_all_sessions(employee_id=None):
     conn = get_connection()
-    rows = conn.execute("SELECT * FROM sessions ORDER BY start_time DESC").fetchall()
+    if employee_id is not None:
+        rows = conn.execute(
+            "SELECT * FROM sessions WHERE employee_id = ? ORDER BY start_time DESC", (employee_id,)
+        ).fetchall()
+    else:
+        rows = conn.execute("SELECT * FROM sessions ORDER BY start_time DESC").fetchall()
     conn.close()
     return [dict(row) for row in rows]
 

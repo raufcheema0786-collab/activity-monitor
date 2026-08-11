@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+venv/
+node_modules/
+frontend/dist/
+monitor.db
+auth_token.json
+app_settings.json
+screenshots/
+*.log
+.claude/
+backend/

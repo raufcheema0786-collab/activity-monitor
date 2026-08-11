@@ -2,11 +2,12 @@ import json
 from datetime import datetime
 from storage.database import get_connection
 
-def save_event(session_id, event_type, metadata=None):
+def save_event(session_id, event_type, metadata=None, client_ref=None, employee_id=None):
     conn = get_connection()
     conn.execute(
-        "INSERT INTO events (session_id, event_type, timestamp, metadata) VALUES (?, ?, ?, ?)",
-        (session_id, event_type, datetime.now().isoformat(), json.dumps(metadata or {}))
+        "INSERT INTO events (session_id, event_type, timestamp, metadata, client_ref, employee_id) "
+        "VALUES (?, ?, ?, ?, ?, ?)",
+        (session_id, event_type, datetime.now().isoformat(), json.dumps(metadata or {}), client_ref, employee_id),
     )
     conn.commit()
     conn.close()

@@ -1,11 +1,11 @@
 from datetime import datetime
 from storage.database import get_connection
 
-def save_screenshot(session_id, path):
+def save_screenshot(session_id, path, client_ref=None, employee_id=None):
     conn = get_connection()
     conn.execute(
-        "INSERT INTO screenshots (session_id, path, captured_at) VALUES (?, ?, ?)",
-        (session_id, path, datetime.now().isoformat())
+        "INSERT INTO screenshots (session_id, path, captured_at, client_ref, employee_id) VALUES (?, ?, ?, ?, ?)",
+        (session_id, path, datetime.now().isoformat(), client_ref, employee_id),
     )
     conn.commit()
     conn.close()

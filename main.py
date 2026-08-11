@@ -3,6 +3,8 @@ import subprocess
 from pathlib import Path
 
 import webview
+from activation_service import handle_activation_if_present
+from auth_storage import get_active_employee_id
 from storage.database import init_db
 from monitoring.session_service import SessionService
 from repositories.event_repository import get_events_for_session
@@ -14,6 +16,14 @@ FRONTEND_DIR = ROOT_DIR / "frontend"
 SRC_DIR = FRONTEND_DIR / "src"
 DIST_DIR = FRONTEND_DIR / "dist"
 DIST_INDEX = DIST_DIR / "index.html"
+
+activation_result = handle_activation_if_present()
+if activation_result:
+    success, message = activation_result
+    if success:
+        print(f"Employee activated successfully: {message}")
+    else:
+        print(f"Activation failed: {message}")
 
 
 def run_npm_command(args):
@@ -56,8 +66,11 @@ class Api:
     def stop_work(self):
         return session_service.stop_work()
 
+    def get_status(self):
+        return session_service.get_status()
+
     def get_sessions(self):
-        return get_all_sessions()
+        return get_all_sessions(employee_id=get_active_employee_id())
 
     def get_session_details(self, session_id):
         return {

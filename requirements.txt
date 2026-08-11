@@ -3,3 +3,4 @@ pynput
 pywin32
 mss
 pillow
+requests
