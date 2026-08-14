@@ -7,6 +7,7 @@ import webview
 from activation_service import handle_activation_if_present
 from auth_storage import get_active_employee_id
 import employee_login_service
+import register_protocol
 from storage.database import init_db
 from monitoring.session_service import SessionService
 from repositories.event_repository import get_events_for_session
@@ -18,6 +19,18 @@ FRONTEND_DIR = ROOT_DIR / "frontend"
 SRC_DIR = FRONTEND_DIR / "src"
 DIST_DIR = FRONTEND_DIR / "dist"
 DIST_INDEX = DIST_DIR / "index.html"
+
+try:
+    # Re-registering on every launch (not just once at install time) means
+    # the employee-monitor:// handler always points at wherever *this*
+    # instance actually is -- whether that's a dev checkout or wherever the
+    # installer put it -- instead of going stale if the app ever moves.
+    # Wrapped defensively: a registry write failing shouldn't take down the
+    # whole app over a feature (clicking activation links) most launches
+    # don't even use.
+    register_protocol.register()
+except Exception as e:
+    print(f"Warning: could not register employee-monitor:// protocol: {e}")
 
 activation_result = handle_activation_if_present()
 if activation_result:
