@@ -1,16 +1,15 @@
 function EventTimeline({ events }) {
+  if (events.length === 0) return <p className="empty-state">No events recorded.</p>;
+
   return (
-    <div style={{ textAlign: "left", maxWidth: "500px", margin: "20px auto" }}>
-      <h3>Event Timeline</h3>
-      {events.length === 0 && <p>No events recorded.</p>}
-      <ul>
-        {events.map((event) => (
-          <li key={event.id}>
-            {new Date(event.timestamp).toLocaleTimeString()} — {event.event_type}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ul className="timeline">
+      {events.map((event) => (
+        <li key={event.id}>
+          <span className="timeline-time">{new Date(event.timestamp).toLocaleTimeString()}</span>
+          {event.event_type}
+        </li>
+      ))}
+    </ul>
   );
 }
 

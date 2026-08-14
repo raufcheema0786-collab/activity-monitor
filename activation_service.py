@@ -3,10 +3,9 @@ from urllib.parse import urlparse, parse_qs
 
 import requests
 from auth_storage import get_active_employee_id, save_token
+from backend_config import BACKEND_URL
 from settings_storage import save_settings
 from sync_service import get_settings
-
-BACKEND_URL = "http://127.0.0.1:8000"
 
 
 def get_incoming_link():

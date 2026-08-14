@@ -3,6 +3,9 @@ __pycache__/
 venv/
 node_modules/
 frontend/dist/
+/dist/
+/build/
+*.spec
 monitor.db
 auth_token.json
 app_settings.json

@@ -1,10 +1,12 @@
 ﻿import os
 import subprocess
+import sys
 from pathlib import Path
 
 import webview
 from activation_service import handle_activation_if_present
 from auth_storage import get_active_employee_id
+import employee_login_service
 from storage.database import init_db
 from monitoring.session_service import SessionService
 from repositories.event_repository import get_events_for_session
@@ -53,8 +55,14 @@ def build_frontend():
     run_npm_command(["run", "build"])
 
 
-if frontend_needs_build():
-    build_frontend()
+if not getattr(sys, "frozen", False):
+    # A packaged executable ships the built frontend/dist baked in via
+    # PyInstaller's --add-data -- there's no frontend/src, no npm, and no
+    # node_modules on an end user's machine to build from, so this whole
+    # dev-mode auto-build check would be meaningless (or worse, error out)
+    # once frozen.
+    if frontend_needs_build():
+        build_frontend()
 
 init_db()
 session_service = SessionService()
@@ -83,6 +91,25 @@ class Api:
         os.startfile(path)
         return True
 
+    def get_login_state(self):
+        return employee_login_service.get_login_state()
+
+    def set_password(self, password):
+        return employee_login_service.set_password(password)
+
+    def login(self, password):
+        return employee_login_service.login(password)
+
+    def login_as(self, employee_name, password):
+        # A session in progress belongs to whoever was signed in before --
+        # switching identity mid-session would let events/screenshots after
+        # this point get attributed to the new employee under the old
+        # employee's session_id. Ending it first keeps the two cleanly
+        # separated.
+        if session_service.current_session_id is not None:
+            session_service.stop_work()
+        return employee_login_service.login_as(employee_name, password)
+
 
 api = Api()
 
@@ -90,6 +117,9 @@ window = webview.create_window(
     "Activity Monitor",
     str(DIST_INDEX),
     js_api=api,
+    width=960,
+    height=720,
+    min_size=(720, 560),
 )
 
 webview.start()

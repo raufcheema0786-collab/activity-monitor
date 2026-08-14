@@ -5,10 +5,9 @@ from typing import Optional
 import requests
 
 from auth_storage import get_active_employee_id, load_token
+from backend_config import BACKEND_URL
 from repositories.pending_upload_repository import queue_upload
 from sync_health import mark_sync_auth_failed, clear_sync_auth_failed
-
-BACKEND_URL = "http://127.0.0.1:8000"
 
 
 @dataclass

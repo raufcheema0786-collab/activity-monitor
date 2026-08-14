@@ -15,29 +15,74 @@ function SessionDetails({ sessionId, onBack }) {
     return `${mins}m ${secs}s`;
   };
 
-  if (!details) return <p>Loading...</p>;
+  if (!details) {
+    return (
+      <div className="app-shell">
+        <div className="topbar">
+          <button className="btn btn-ghost" onClick={onBack}>← Back</button>
+          <h1>Session</h1>
+        </div>
+        <p className="empty-state">Loading…</p>
+      </div>
+    );
+  }
 
   const { session, events, screenshots } = details;
   const duration = session.duration != null ? formatDuration(session.duration) : "Running";
   const activeTime = session.active_time != null ? formatDuration(session.active_time) : "0m 0s";
   const idleTime = session.idle_time != null ? formatDuration(session.idle_time) : "0m 0s";
-  const eventCount = events.length;
-  const screenshotCount = screenshots.length;
 
   return (
-    <div style={{ padding: "40px", textAlign: "center" }}>
-      <button onClick={onBack}>Back to Sessions</button>
-      <h2>Session {session.id}</h2>
-      <p>Start: {session.start_time}</p>
-      <p>End: {session.end_time || "Still running"}</p>
-      <p>Duration: {duration}</p>
-      <p>Active time: {activeTime}</p>
-      <p>Idle time: {idleTime}</p>
-      <p>Events recorded: {eventCount}</p>
-      <p>Screenshots captured: {screenshotCount}</p>
+    <div className="app-shell">
+      <div className="topbar">
+        <button className="btn btn-ghost" onClick={onBack}>← Back to sessions</button>
+        <h1>Session #{session.id}</h1>
+      </div>
 
-      <EventTimeline events={events} />
-      <ScreenshotGallery screenshots={screenshots} />
+      <div className="card">
+        <table className="data-table">
+          <tbody>
+            <tr>
+              <td>Start</td>
+              <td className="mono">{session.start_time}</td>
+            </tr>
+            <tr>
+              <td>End</td>
+              <td className="mono">{session.end_time || "Still running"}</td>
+            </tr>
+            <tr>
+              <td>Duration</td>
+              <td className="mono">{duration}</td>
+            </tr>
+            <tr>
+              <td>Active time</td>
+              <td className="mono">{activeTime}</td>
+            </tr>
+            <tr>
+              <td>Idle time</td>
+              <td className="mono">{idleTime}</td>
+            </tr>
+            <tr>
+              <td>Events recorded</td>
+              <td className="mono">{events.length}</td>
+            </tr>
+            <tr>
+              <td>Screenshots captured</td>
+              <td className="mono">{screenshots.length}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div className="card">
+        <h2 style={{ marginBottom: 12 }}>Event timeline</h2>
+        <EventTimeline events={events} />
+      </div>
+
+      <div className="card">
+        <h2 style={{ marginBottom: 12 }}>Screenshots</h2>
+        <ScreenshotGallery screenshots={screenshots} />
+      </div>
     </div>
   );
 }

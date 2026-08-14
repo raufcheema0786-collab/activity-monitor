@@ -1,6 +1,17 @@
 import sqlite3
+import sys
+from pathlib import Path
 
 DB_PATH = "monitor.db"
+
+# schema.sql is a bundled read-only resource, not user data -- monitor.db
+# above stays CWD-relative on purpose (that's where a real install's data
+# should live), but schema.sql needs to be found relative to the app
+# itself. In a normal run that's this file's own project root; in a
+# PyInstaller onefile build it's the temp dir the bundle was extracted to
+# (sys._MEIPASS), not the process's working directory.
+_APP_ROOT = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent))
+SCHEMA_PATH = _APP_ROOT / "schema.sql"
 
 # Columns added after the initial schema was created. schema.sql's
 # CREATE TABLE IF NOT EXISTS won't retrofit these onto an existing
@@ -39,7 +50,7 @@ def _run_migrations(conn):
 
 def init_db():
     conn = get_connection()
-    with open("schema.sql") as f:
+    with open(SCHEMA_PATH) as f:
         conn.executescript(f.read())
     _run_migrations(conn)
     # Created here rather than in schema.sql: on an existing database the

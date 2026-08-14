@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Login from "./Login";
 import SessionList from "./SessionList";
 import SessionDetails from "./SessionDetails";
@@ -73,25 +73,44 @@ function App() {
   }
 
   return (
-    <div style={{ padding: "40px", textAlign: "center" }}>
-      <h1>Activity Monitor</h1>
-      <p>Welcome, {user}</p>
+    <div className="app-shell">
+      <div className="topbar">
+        <h1>Activity Monitor</h1>
+      </div>
 
-      {working ? (
-        <>
-          <h2>{formatTime(seconds)}</h2>
-          <button onClick={stopWork}>Stop Work</button>
-        </>
-      ) : (
-        <button onClick={startWork}>Start Work</button>
-      )}
+      <div className="card" style={{ textAlign: "center", padding: "36px 24px" }}>
+        <p style={{ color: "var(--text-muted)", fontSize: 13.5, marginBottom: 18 }}>
+          Signed in as <strong style={{ color: "var(--text)" }}>{user}</strong>
+        </p>
 
-      {sessionId && <p>Current session id: {sessionId}</p>}
+        {working ? (
+          <>
+            <div className="mono" style={{ fontSize: 40, fontWeight: 650, letterSpacing: "-0.02em", marginBottom: 20 }}>
+              {formatTime(seconds)}
+            </div>
+            <button className="btn" style={{ borderColor: "var(--danger)", color: "var(--danger)" }} onClick={stopWork}>
+              Stop work
+            </button>
+          </>
+        ) : (
+          <button className="btn btn-primary" onClick={startWork}>
+            Start work
+          </button>
+        )}
 
-      <div style={{ marginTop: "30px" }}>
-        <button onClick={() => setScreen("sessions")}>View Past Sessions</button>
-        <button style={{ marginLeft: "10px" }} onClick={() => setScreen("status")}>
-          My Status
+        {sessionId && (
+          <p style={{ color: "var(--text-muted)", fontSize: 12, marginTop: 14 }}>
+            Session #{sessionId}
+          </p>
+        )}
+      </div>
+
+      <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+        <button className="btn" onClick={() => setScreen("sessions")}>
+          Past sessions
+        </button>
+        <button className="btn" onClick={() => setScreen("status")}>
+          My status
         </button>
       </div>
     </div>
